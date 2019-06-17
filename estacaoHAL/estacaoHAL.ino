@@ -2,8 +2,6 @@
 #include "RTClib.h" // Biblioteca do relogio.
 #include <Wire.h>
 
-//test git3
-
 //Instanciando os objetos.
 BME280 bme280;
 RTC_DS3231 rtc;
@@ -13,10 +11,11 @@ char daysOfTheWeek[7][12] = {"Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"};
 
 int contador = 0; // Variavel do Contador
 
-// Variaveis Temperatura.
-double temperatura1 = 0;
-double temperatura2 = 0;
-double temperatura3 = 0;
+//Variavel Historico Temperatura.
+double TemperaturaArray[3][2];
+
+//Variavel do intervalo entre dados historiocos.
+int intervalo[2] = {3, 6, 9};
 
 // Variaveis Pressao.
 double pressure;
@@ -30,19 +29,24 @@ char tendencia3temp = ' ';
 
 void setup()
 {
-  
   Serial.begin(9600); // Seta velocidade da porta serial.
   
   //Check do sensor Pressao
   if(!bme280.init()){
     Serial.println("Device error!");
   }
+	else{
+		Serial.println("Barometro e Termometro - OK");
+		}
 
   //Check do relogio
   if(! rtc.begin()) { // SE O RTC NÃO FOR INICIALIZADO, FAZ
     Serial.println("DS3231 não encontrado"); //IMPRIME O TEXTO NO MONITOR SERIAL
     while(1); //SEMPRE ENTRE NO LOOP
   }
+	  else{
+	  	Serial.println("Relogio - OK");
+	  }
   
   // Para ajsutar o relogio
   ///if(rtc.lostPower()){ //SE RTC FOI LIGADO PELA PRIMEIRA VEZ / FICOU SEM ENERGIA / ESGOTOU A BATERIA, FAZ
@@ -53,13 +57,13 @@ void setup()
   ///}
 
   delay(100); //INTERVALO DE 100 MILISSEGUNDOS
-  
 }
 
 void loop()
 {
   DateTime now = rtc.now();
   
+	//Monta e imprimi Hora e Data
   Serial.print(now.hour(), DEC); //IMPRIME NO MONITOR SERIAL A HORA
   Serial.print(':'); //IMPRIME O CARACTERE NO MONITOR SERIAL
   Serial.print(now.minute(), DEC); //IMPRIME NO MONITOR SERIAL OS MINUTOS
@@ -81,11 +85,10 @@ void loop()
   
   //get and print atmospheric pressure data
   Serial.print("Pres Atual: ");
-  //Serial.print(pressure = bme280.getPressure());
-  //Serial.println("Pa");
   Serial.print(pressure = bme280.getPressure()/100);
   Serial.println(" mbar");
   
+  // Se quiser pegar a altitude pela pressao.
   //get and print altitude data
   //Serial.print("Altitude: ");
   //Serial.print(bme280.calcAltitude(pressure));
@@ -108,7 +111,9 @@ void loop()
   Serial.println(contador);
      
   Serial.print("5m ");
-  Serial.println(temperatura1);    
+  Serial.print(TemperaturaArray[0][0]);
+  Serial.print(" ");
+  Serial.println(TemperaturaArray[0][1]);
   
   Serial.print("15m ");
   Serial.print(temperatura2);
@@ -120,44 +125,55 @@ void loop()
   
   Serial.println("------------------------");
 
-  if(contador==6){
-    temperatura1=bme280.getTemperature();
-    //Serial.println("5m ");
-    //Serial.print(temperatura1);
+  
+  //Primeiro ponto de historico.
+  if(contador==intervalo[0]){
+    TemperaturaArray[0][0]=bme280.getTemperature();
+    TemperaturaArray[0][1]=now.hour();
     }
-    else if (contador==12) {
-      temperatura2=bme280.getTemperature();
-       
-      if (temperatura2 > temperatura1) {
-        tendencia2temp = '+';
-        }
-        
-      if (temperatura2 < temperatura1) {
-        tendencia2temp = '-';
-        }  
-         
-      if (temperatura2 = temperatura1) {
-        tendencia2temp = '=';
-        }  
-          
-    }
-      else if (contador==72) {
-        temperatura3=bme280.getTemperature();
-        
-        if (temperatura3 > temperatura2) {
-          tendencia3temp = '+';
-        }
-        
-        if (temperatura3 < temperatura2) {
-          tendencia3temp = '-';
-        }  
-         
-        if (temperatura3 = temperatura2) {
-          tendencia3temp = '=';
-        }  
 
-        contador = 0;
+  //Segundo ponto do historico.
+  if (contador==intervalo[1]) {
+    TemperaturaArray[1][0]=bme280.getTemperature();
+    TemperaturaArray[1][1]=now.hour();
+    
+    if (TemperaturaArray[1][0] = TemperaturaArray[0][0]) {
+        tendencia2temp = '=';
         }
+        
+        else{
+          if (TemperaturaArray[1][0] > TemperaturaArray[0][0]) {
+          tendencia2temp = '+';
+          }
+          
+            else{
+              tendencia2temp = '-';
+              }
+        }
+    }  
+  
+  // Terceiro ponto do historico.
+  if (contador==intervalo[2]) {
+	   TemperaturaArray[2][0]=bme280.getTemperature();
+     TemperaturaArray[2][1]=now.hour();
+     
+    
+    if (TemperaturaArray[2][0] = TemperaturaArray[1][0]) {
+		tendencia3temp = '=';
+        }
+        
+    else{
+		if (TemperaturaArray[2][0] = TemperaturaArray[1][0]) {
+            tendencia3temp = '+';
+			}
+          
+        else{
+			tendencia3temp = '-';
+			}
+        }
+    
+      contador = 0;
+    }  
     
   delay(5000);
 }
