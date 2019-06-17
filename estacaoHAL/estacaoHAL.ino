@@ -15,7 +15,7 @@ int contador = 0; // Variavel do Contador
 double TemperaturaArray[3][2];
 
 //Variavel do intervalo entre dados historiocos.
-int intervalo[2] = {3, 6, 9};
+int intervalo[3] = {3, 10, 20};
 
 // Variaveis Pressao.
 double pressure;
@@ -116,20 +116,24 @@ void loop()
   Serial.println(TemperaturaArray[0][1]);
   
   Serial.print("15m ");
-  Serial.print(temperatura2);
-  Serial.println(tendencia2);   
+  Serial.print(TemperaturaArray[1][0]);
+  Serial.print(tendencia2temp);  
+  Serial.print(" ");
+  Serial.println(TemperaturaArray[1][1]);
   
   Serial.print("30m ");
-  Serial.println(temperatura3);
-  Serial.println(tendencia3);     
-  
+  Serial.print(TemperaturaArray[2][0]);
+  Serial.print(tendencia3temp);  
+  Serial.print(" ");
+  Serial.println(TemperaturaArray[2][1]);
+
   Serial.println("------------------------");
 
   
   //Primeiro ponto de historico.
   if(contador==intervalo[0]){
     TemperaturaArray[0][0]=bme280.getTemperature();
-    TemperaturaArray[0][1]=now.hour();
+    TemperaturaArray[0][1]=(now.hour)();
     }
 
   //Segundo ponto do historico.
@@ -137,7 +141,7 @@ void loop()
     TemperaturaArray[1][0]=bme280.getTemperature();
     TemperaturaArray[1][1]=now.hour();
     
-    if (TemperaturaArray[1][0] = TemperaturaArray[0][0]) {
+    if (TemperaturaArray[1][0] == TemperaturaArray[0][0]) {
         tendencia2temp = '=';
         }
         
@@ -158,12 +162,12 @@ void loop()
      TemperaturaArray[2][1]=now.hour();
      
     
-    if (TemperaturaArray[2][0] = TemperaturaArray[1][0]) {
+    if (TemperaturaArray[2][0] == TemperaturaArray[1][0]) {
 		tendencia3temp = '=';
         }
         
     else{
-		if (TemperaturaArray[2][0] = TemperaturaArray[1][0]) {
+		if (TemperaturaArray[2][0] > TemperaturaArray[1][0]) {
             tendencia3temp = '+';
 			}
           
