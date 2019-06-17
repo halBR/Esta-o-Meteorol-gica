@@ -2,7 +2,7 @@
 #include "RTClib.h" // Biblioteca do relogio.
 #include <Wire.h>
 
-//test git
+//test git2
 
 //Instanciando os objetos.
 BME280 bme280;
