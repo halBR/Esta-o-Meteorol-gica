@@ -1,0 +1,2 @@
+Clock - DS3231
+Barometro Temp Hum - gybmcp bme/bmp 280
