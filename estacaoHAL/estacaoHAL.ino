@@ -41,7 +41,7 @@ void setup()
   //Check do sensor Pressao
   if(!bme280.init()){
     Serial.println("Device error!");
-  }
+	}
 	else{
 		Serial.println("Barometro e Termometro - OK");
 		}
@@ -50,7 +50,7 @@ void setup()
   if(! rtc.begin()) { // SE O RTC NÃO FOR INICIALIZADO, FAZ
     Serial.println("DS3231 não encontrado"); //IMPRIME O TEXTO NO MONITOR SERIAL
     while(1); //SEMPRE ENTRE NO LOOP
-  }
+	}
 	  else{
 	  	Serial.println("Relogio - OK");
 	  }
@@ -129,11 +129,8 @@ void loop()
   Serial.println(TemperaturaArray[2][1]);
 
   Serial.println("------------------------");
-
   
   //Primeiro ponto de historico.
-
-     
   if(contador==intervalo[0]){
     TemperaturaArray[0][0]=bme280.getTemperature();
     Atual[0]="*";
@@ -145,10 +142,9 @@ void loop()
         PrimeiraVez = false;
         }
         else{
-          TemperaturaArray[0][1] = TemperaturaArray[0][0] - TemperaturaArray[2][0];
-        }
-      
-      }
+			TemperaturaArray[0][1] = TemperaturaArray[0][0] - TemperaturaArray[2][0];
+			}
+    }
 
   //Segundo ponto do historico.
   if (contador==intervalo[1]) {
@@ -163,24 +159,21 @@ void loop()
         }
         
         else{
-          if (TemperaturaArray[1][0] > TemperaturaArray[0][0]) {
-          tendencia2temp = '+';
-          }
-          
- 
-        }
+			if (TemperaturaArray[1][0] > TemperaturaArray[0][0]) {
+				tendencia2temp = '+';
+				}
+			}
     }  
   
   // Terceiro ponto do historico.
   if (contador==intervalo[2]) {
-	   TemperaturaArray[2][0]=bme280.getTemperature();
-     TemperaturaArray[2][1]=TemperaturaArray[2][0] - TemperaturaArray[1][0];
+	TemperaturaArray[2][0]=bme280.getTemperature();
+    TemperaturaArray[2][1]=TemperaturaArray[2][0] - TemperaturaArray[1][0];
 
-      Atual[0]=" ";
-      Atual[1]=" ";
-      Atual[2]="*";
-
-         
+    Atual[0]=" ";
+    Atual[1]=" ";
+    Atual[2]="*";
+     
     if (TemperaturaArray[2][0] == TemperaturaArray[1][0]) {
 		tendencia3temp = '=';
         }
@@ -189,13 +182,10 @@ void loop()
 		if (TemperaturaArray[2][0] > TemperaturaArray[1][0]) {
             tendencia3temp = '+';
 			}
-          
-
         }
     
       contador = 0;
     }  
     
-
   delay(5000);
 }
