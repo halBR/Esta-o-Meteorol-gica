@@ -11,17 +11,19 @@ char daysOfTheWeek[7][12] = {"DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"};
 
 int contador = 0; // Variavel do Contador
 
-//Variavel Historico Temperatura.
+//Variaveis de Historico.
 int TemperaturaArray[3][2];
+int HumidadeArray[3][2];
+int PressaoArray[3][2];
 
 //Variavel do intervalo entre dados historiocos.
 int intervalo[3] = {3, 6, 12};
 
 // Variaveis Pressao.
-double pressure;
-double pressao1 = 0;
-double pressao2 = 0;
-double pressao3 = 0;
+int pressure;
+double temperaturaFull;
+int temperatura;
+int humidade;
 
 // Variaveis Tendencia.
 char tendencia2temp = ' ';
@@ -78,7 +80,8 @@ void loop()
   
   //get and print temperatures
   Serial.print("Temp Atual: ");
-  Serial.print(bme280.getTemperature());
+  temperaturaFull=bme280.getTemperature();
+  Serial.print(btemperaturaFull);
   Serial.println(" C");//The unit for  Celsius because original arduino don't support special symbols
   
   //get and print atmospheric pressure data
@@ -109,47 +112,77 @@ void loop()
   Serial.println(contador);
 
   Serial.print(Atual[0]);   
-  Serial.print("5m ");
+  Serial.print("1x ");
   Serial.print (TemperaturaArray[0][0]);
   Serial.print(" ");
-  Serial.println(TemperaturaArray[0][1]);
+  Serial.print(TemperaturaArray[0][1]);
+  Serial.print(" ");
+  Serial.println(HumidadeArray[0][1]);
   
   Serial.print(Atual[1]); 
-  Serial.print("15m ");
+  Serial.print("2x ");
   Serial.print(TemperaturaArray[1][0]);
   Serial.print(" ");
   Serial.print(tendencia2temp);  
-  Serial.println(TemperaturaArray[1][1]);
+  Serial.print(TemperaturaArray[1][1]);
+  Serial.print(" ");
+  Serial.println(HumidadeArray[1][1]);
   
   Serial.print(Atual[2]); 
-  Serial.print("30m ");
+  Serial.print("3x ");
   Serial.print(TemperaturaArray[2][0]);
   Serial.print(" ");
   Serial.print(tendencia3temp);  
-  Serial.println(TemperaturaArray[2][1]);
+  Serial.print(TemperaturaArray[2][1]);
+  Serial.print(" ");
+  Serial.println(HumidadeArray[2][1]);
 
   Serial.println("------------------------");
   
   //Primeiro ponto de historico.
   if(contador==intervalo[0]){
+    
+    //Le os sensores
     TemperaturaArray[0][0]=bme280.getTemperature();
+    HumidadeArray[0][0]=bme280.getHumidity();
+    PressaoArray[0][0]=pressure;
+    
+    //Marca qual a ultima leitura
     Atual[0]="*";
     Atual[1]=" ";
     Atual[2]=" ";
     
     if(PrimeiraVez){
+        //Zera a diferença na primeira vez
         TemperaturaArray[0][1] = 0;
+        HumidadeArray[0][1] = 0;
+        PressaoArray[0][1] = 0;
+        
         PrimeiraVez = false;
+        
         }
         else{
-			TemperaturaArray[0][1] = TemperaturaArray[0][0] - TemperaturaArray[2][0];
+			    ////Calcula a diferenca
+			    TemperaturaArray[0][1] = TemperaturaArray[0][0] - TemperaturaArray[2][0];
+          HumidadeArray[0][1] = HumidadeArray[0][0] - HumidadeArray[2][0];
+          PressaoArray[0][1] = PressaoArray[0][0] - PressaoArray[2][0]; 
+     
 			}
     }
 
   //Segundo ponto do historico.
   if (contador==intervalo[1]) {
+    //Le os sensores
     TemperaturaArray[1][0]=bme280.getTemperature();
+    HumidadeArray[1][0]=bme280.getHumidity();
+    PressaoArray[1][0]=pressure;
+
+    //Calcula a diferenca
     TemperaturaArray[1][1]=TemperaturaArray[1][0] - TemperaturaArray[0][0];
+    HumidadeArray[1][1]=HumidadeArray[1][0] - HumidadeArray[0][0];
+    PressaoArray[1][1]=PressaoArray[1][0] - PressaoArray[0][0];
+    
+    //Marca qual a ultima leitura
     Atual[0]=" ";
     Atual[1]="*";
     Atual[2]=" ";
@@ -167,9 +200,17 @@ void loop()
   
   // Terceiro ponto do historico.
   if (contador==intervalo[2]) {
-	TemperaturaArray[2][0]=bme280.getTemperature();
-    TemperaturaArray[2][1]=TemperaturaArray[2][0] - TemperaturaArray[1][0];
+	  //Le os sensores
+	  TemperaturaArray[2][0]=bme280.getTemperature();
+    HumidadeArray[2][0]=bme280.getHumidity();
+    PressaoArray[2][0]=pressure;
 
+     //Calcula a diferenca
+    TemperaturaArray[2][1]=TemperaturaArray[2][0] - TemperaturaArray[1][0];
+    HumidadeArray[2][1]=HumidadeArray[2][0] - HumidadeArray[1][0];
+    PressaoArray[2][1]=PressaoArray[2][0] - PressaoArray[1][0];
+
+    //Marca qual a ultima leitura
     Atual[0]=" ";
     Atual[1]=" ";
     Atual[2]="*";
