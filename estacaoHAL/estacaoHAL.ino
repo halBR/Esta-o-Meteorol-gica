@@ -81,7 +81,7 @@ void loop()
   //get and print temperatures
   Serial.print("Temp Atual: ");
   temperaturaFull=bme280.getTemperature();
-  Serial.print(btemperaturaFull);
+  Serial.print(temperaturaFull);
   Serial.println(" C");//The unit for  Celsius because original arduino don't support special symbols
   
   //get and print atmospheric pressure data
@@ -117,7 +117,9 @@ void loop()
   Serial.print(" ");
   Serial.print(TemperaturaArray[0][1]);
   Serial.print(" ");
-  Serial.println(HumidadeArray[0][1]);
+  Serial.print(HumidadeArray[0][0]);
+  Serial.print(" ");
+  Serial.println(PressaoArray[0][0]);
   
   Serial.print(Atual[1]); 
   Serial.print("2x ");
@@ -126,7 +128,9 @@ void loop()
   Serial.print(tendencia2temp);  
   Serial.print(TemperaturaArray[1][1]);
   Serial.print(" ");
-  Serial.println(HumidadeArray[1][1]);
+  Serial.print(HumidadeArray[1][0]);
+  Serial.print(" ");
+  Serial.println(PressaoArray[1][0]);
   
   Serial.print(Atual[2]); 
   Serial.print("3x ");
@@ -135,8 +139,9 @@ void loop()
   Serial.print(tendencia3temp);  
   Serial.print(TemperaturaArray[2][1]);
   Serial.print(" ");
-  Serial.println(HumidadeArray[2][1]);
-
+  Serial.print(HumidadeArray[2][0]);
+   Serial.print(" ");
+  Serial.println(PressaoArray[2][0]);
   Serial.println("------------------------");
   
   //Primeiro ponto de historico.
