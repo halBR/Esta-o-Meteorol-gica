@@ -29,6 +29,10 @@ int humidade;
 char tendencia2temp = ' ';
 char tendencia3temp = ' ';
 
+char tendencia2um = ' ';
+char tendencia3um = ' ';
+
+
 String Hora;
 String Data;
 
@@ -130,6 +134,8 @@ void loop()
   Serial.print(" ");
   Serial.print(HumidadeArray[1][0]);
   Serial.print(" ");
+  Serial.print(tendencia2um);
+  Serial.print(" ");
   Serial.println(PressaoArray[1][0]);
   
   Serial.print(Atual[2]); 
@@ -143,6 +149,10 @@ void loop()
    Serial.print(" ");
   Serial.println(PressaoArray[2][0]);
   Serial.println("------------------------");
+
+
+
+
   
   //Primeiro ponto de historico.
   if(contador==intervalo[0]){
@@ -191,16 +201,16 @@ void loop()
     Atual[0]=" ";
     Atual[1]="*";
     Atual[2]=" ";
+    tendencia2temp = ' ';
     
-    if (TemperaturaArray[1][0] == TemperaturaArray[0][0]) {
-        tendencia2temp = '=';
-        }
-        
-        else{
-			if (TemperaturaArray[1][0] > TemperaturaArray[0][0]) {
-				tendencia2temp = '+';
-				}
-			}
+    if (TemperaturaArray[1][0] > TemperaturaArray[0][0]) {
+		  tendencia2temp = '+';
+		  }
+
+    if (HumidadeArray[1][0] > HumidadeArray[0][0]) {
+      tendencia2um = '+';
+      }
+     		
     }  
   
   // Terceiro ponto do historico.
@@ -219,17 +229,18 @@ void loop()
     Atual[0]=" ";
     Atual[1]=" ";
     Atual[2]="*";
+    tendencia3temp = ' ';
      
-    if (TemperaturaArray[2][0] == TemperaturaArray[1][0]) {
-		tendencia3temp = '=';
-        }
-        
-    else{
+   
 		if (TemperaturaArray[2][0] > TemperaturaArray[1][0]) {
             tendencia3temp = '+';
 			}
-        }
-    
+
+    if (HumidadeArray[2][0] > HumidadeArray[1][0]) {
+              tendencia3um = '+';
+      }
+     
+           
       contador = 0;
     }  
     
