@@ -132,9 +132,9 @@ void loop()
   Serial.print(tendencia2temp);  
   Serial.print(TemperaturaArray[1][1]);
   Serial.print(" ");
-  Serial.print(HumidadeArray[1][0]);
   Serial.print(" ");
   Serial.print(tendencia2um);
+  Serial.print(HumidadeArray[1][1]);
   Serial.print(" ");
   Serial.println(PressaoArray[1][0]);
   
