@@ -81,12 +81,40 @@ void loop()
   
   Serial.print(Hora);// + ':' + Minuto); //QUEBRA DE LINHA NA SERIAL
   Serial.println(Data);// + ':' + Minuto); //QUEBRA DE LINHA NA SERIAL
-  
+  Serial.print("T ");
   //get and print temperatures
-  Serial.print("Temp Atual: ");
   temperaturaFull=bme280.getTemperature();
   Serial.print(temperaturaFull);
-  Serial.println(" C");//The unit for  Celsius because original arduino don't support special symbols
+  Serial.print(" ");
+  Serial.print(Atual[0]);
+  Serial.print(TemperaturaArray[0][1]); 
+  Serial.print(" ");
+  Serial.print(Atual[1]);
+  Serial.print(TemperaturaArray[1][1]); 
+  Serial.print(" ");
+  Serial.print(Atual[2]);
+  Serial.println(TemperaturaArray[2][1]);
+  Serial.print("U ");
+  Serial.print(bme280.getHumidity());
+  Serial.print("%");
+  Serial.print(" ");
+  Serial.print(Atual[0]);
+  Serial.print(HumidadeArray[0][1]);
+  Serial.print(" ");
+  Serial.print(Atual[1]);
+  Serial.print(HumidadeArray[1][1]);
+  Serial.print(" ");
+  Serial.print(Atual[2]);
+  Serial.print(HumidadeArray[2][1]);
+  Serial.println(" ");
+  Serial.print("P ");
+  Serial.println(pressure = bme280.getPressure()/100);
+
+  
+  
+  //Serial.print("Temp Atual: ");
+
+  //Serial.println(" C");//The unit for  Celsius because original arduino don't support special symbols
   
   //get and print atmospheric pressure data
   Serial.print("Pres Atual: ");
@@ -136,7 +164,9 @@ void loop()
   Serial.print(tendencia2um);
   Serial.print(HumidadeArray[1][1]);
   Serial.print(" ");
-  Serial.println(PressaoArray[1][0]);
+  Serial.print(PressaoArray[1][0]);
+  //Serial.print(" ");
+  //Serial.println(HumidadeArray[0][1]);
   
   Serial.print(Atual[2]); 
   Serial.print("3x ");
@@ -149,8 +179,6 @@ void loop()
    Serial.print(" ");
   Serial.println(PressaoArray[2][0]);
   Serial.println("------------------------");
-
-
 
 
   
