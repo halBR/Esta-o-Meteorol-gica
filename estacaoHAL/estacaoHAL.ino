@@ -1,6 +1,10 @@
 #include "Seeed_BME280.h" // Bilbioteca do barometro.
 #include "RTClib.h" // Biblioteca do relogio.
 #include <Wire.h>
+#include "LCD.h" // For LCD
+#include "LiquidCrystal_I2C.h" // Added library*
+
+LiquidCrystal_I2C lcd(0x27,2,1,0,4,5,6,7); // 0x27 is the default I2C bus address of the backpack-see article
 
 //Instanciando os objetos.
 BME280 bme280;
@@ -43,6 +47,14 @@ String Atual[3];
 void setup()
 {
   Serial.begin(9600); // Seta velocidade da porta serial.
+
+    // Set off LCD module
+   lcd.begin (20,4); // 16 x 2 LCD module
+   lcd.setBacklightPin(3,POSITIVE); // BL, BL_POL
+   lcd.setBacklight(HIGH);
+   lcd.print("Iniciando");
+   //lcd.setCursor(0,1);
+   //lcd.print("Legalzao!*");   
   
   //Check do sensor Pressao
   if(!bme280.init()){
@@ -50,6 +62,8 @@ void setup()
 	}
 	else{
 		Serial.println("Barometro e Termometro - OK");
+   //lcd.setCursor(0,0);
+   //lcd.print("Barometro e Termometro - OK"); 
 		}
 
   //Check do relogio
@@ -59,6 +73,8 @@ void setup()
 	}
 	  else{
 	  	Serial.println("Relogio - OK");
+      //lcd.setCursor(0,1);
+      //lcd.print("Relogio - OK"); 
 	  }
   
   // Para ajsutar o relogio
@@ -78,6 +94,11 @@ void loop()
 
   Hora = String(now.hour()) + ":" + String(now.minute()) + " ";
   Data = String(now.day()) + "/" + String(now.month()) + "/" + String(now.year()) + " " + String(daysOfTheWeek[now.dayOfTheWeek()]); 
+
+  lcd.setCursor(0,0);
+  lcd.print(Hora);
+  lcd.setCursor(6,0);
+  lcd.print(Data);
   
   Serial.print(Hora);// + ':' + Minuto); //QUEBRA DE LINHA NA SERIAL
   Serial.println(Data);// + ':' + Minuto); //QUEBRA DE LINHA NA SERIAL
@@ -85,13 +106,48 @@ void loop()
   //get and print temperatures
   temperaturaFull=bme280.getTemperature();
   Serial.print(temperaturaFull);
+  
+  lcd.setCursor(0,1);
+  lcd.print("T ");
+  lcd.setCursor(2,1);
+  lcd.print(temperaturaFull);
+  
   Serial.print(" ");
+  Serial.print(Atual[0]);
+  
+  lcd.setCursor(8,1);
+  lcd.print(Atual[0]);
+  lcd.setCursor(9,1);
+  lcd.print("   ");
+  lcd.setCursor(9,1);
+  lcd.print(TemperaturaArray[0][1]);
+  
   Serial.print(Atual[0]);
   Serial.print(TemperaturaArray[0][1]); 
   Serial.print(" ");
+
+  lcd.setCursor(12,1);
+  lcd.print(Atual[1]);
+  lcd.setCursor(13,1);
+  lcd.print("   ");
+  lcd.setCursor(13,1);
+  lcd.print(TemperaturaArray[1][1]);
+  
+  
   Serial.print(Atual[1]);
   Serial.print(TemperaturaArray[1][1]); 
   Serial.print(" ");
+ 
+
+  lcd.setCursor(12,1);
+  lcd.print(Atual[2]);
+  lcd.setCursor(17,1);
+  lcd.print("   ");
+  lcd.setCursor(17,1);
+  lcd.print(TemperaturaArray[2][1]);
+
+  
+  
   Serial.print(Atual[2]);
   Serial.println(TemperaturaArray[2][1]);
   Serial.print("U ");
