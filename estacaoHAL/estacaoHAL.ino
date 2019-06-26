@@ -4,13 +4,12 @@
 #include "LCD.h" // For LCD
 #include "LiquidCrystal_I2C.h" // Added library*
 
-LiquidCrystal_I2C lcd(0x27,2,1,0,4,5,6,7); // 0x27 is the default I2C bus address of the backpack-see article
-
 //Instanciando os objetos.
 BME280 bme280;
 RTC_DS3231 rtc;
+LiquidCrystal_I2C lcd(0x27,2,1,0,4,5,6,7); // 0x27 is the default I2C bus address of the backpack-see article
 
-//DECLARAÇÃO DOS DIAS DA SEMANA
+//DECLARAÇÃO variaveis
 char daysOfTheWeek[7][12] = {"DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"};
 
 int contador = 0; // Variavel do Contador
@@ -26,6 +25,7 @@ int intervalo[3] = {3, 6, 12};
 // Variaveis Pressao.
 int pressure;
 double temperaturaFull;
+int UmidadeFull;
 int temperatura;
 int humidade;
 
@@ -35,7 +35,6 @@ char tendencia3temp = ' ';
 
 char tendencia2um = ' ';
 char tendencia3um = ' ';
-
 
 String Hora;
 String Data;
@@ -53,29 +52,24 @@ void setup()
    lcd.setBacklightPin(3,POSITIVE); // BL, BL_POL
    lcd.setBacklight(HIGH);
    lcd.print("Iniciando");
-   //lcd.setCursor(0,1);
-   //lcd.print("Legalzao!*");   
+   
   
-  //Check do sensor Pressao
-  if(!bme280.init()){
-    Serial.println("Device error!");
-	}
-	else{
-		Serial.println("Barometro e Termometro - OK");
-   //lcd.setCursor(0,0);
-   //lcd.print("Barometro e Termometro - OK"); 
-		}
+    //Check do sensor Pressao
+    if(!bme280.init()){
+      Serial.println("Device error!");
+	    }
+	  else{
+		  Serial.println("Barometro e Termometro - OK");
+    	}
 
   //Check do relogio
   if(! rtc.begin()) { // SE O RTC NÃO FOR INICIALIZADO, FAZ
     Serial.println("DS3231 não encontrado"); //IMPRIME O TEXTO NO MONITOR SERIAL
     while(1); //SEMPRE ENTRE NO LOOP
-	}
-	  else{
-	  	Serial.println("Relogio - OK");
-      //lcd.setCursor(0,1);
-      //lcd.print("Relogio - OK"); 
 	  }
+	    else{
+	  	  Serial.println("Relogio - OK");
+        }
   
   // Para ajsutar o relogio
   ///if(rtc.lostPower()){ //SE RTC FOI LIGADO PELA PRIMEIRA VEZ / FICOU SEM ENERGIA / ESGOTOU A BATERIA, FAZ
@@ -86,6 +80,8 @@ void setup()
   ///}
 
   delay(100); //INTERVALO DE 100 MILISSEGUNDOS
+
+
 }
 
 void loop()
@@ -97,7 +93,8 @@ void loop()
 
   lcd.setCursor(0,0);
   lcd.print(Hora);
-  lcd.setCursor(6,0);
+  lcd.print(" ");
+  //lcd.setCursor(6,0);
   lcd.print(Data);
   
   Serial.print(Hora);// + ':' + Minuto); //QUEBRA DE LINHA NA SERIAL
@@ -105,33 +102,41 @@ void loop()
   Serial.print("T ");
   //get and print temperatures
   temperaturaFull=bme280.getTemperature();
+  UmidadeFull=bme280.getHumidity();
   Serial.print(temperaturaFull);
   
   lcd.setCursor(0,1);
   lcd.print("T ");
   lcd.setCursor(2,1);
   lcd.print(temperaturaFull);
+  lcd.setCursor(7,1);
+  lcd.print("             ");
+  lcd.setCursor(8,1);
+
+  //lcd.print(" ");
   
   Serial.print(" ");
   Serial.print(Atual[0]);
   
-  lcd.setCursor(8,1);
+  //lcd.setCursor(8,1);
   lcd.print(Atual[0]);
-  lcd.setCursor(9,1);
-  lcd.print("   ");
-  lcd.setCursor(9,1);
+  //lcd.setCursor(9,1);
+  //lcd.print("   ");
+  //lcd.setCursor(9,1);
   lcd.print(TemperaturaArray[0][1]);
+  lcd.print(" ");
   
   Serial.print(Atual[0]);
   Serial.print(TemperaturaArray[0][1]); 
   Serial.print(" ");
 
-  lcd.setCursor(12,1);
+  //lcd.setCursor(12,1);
   lcd.print(Atual[1]);
-  lcd.setCursor(13,1);
-  lcd.print("   ");
-  lcd.setCursor(13,1);
+  //lcd.setCursor(13,1);
+  //lcd.print("   ");
+  //lcd.setCursor(13,1);
   lcd.print(TemperaturaArray[1][1]);
+  lcd.print(" ");
   
   
   Serial.print(Atual[1]);
@@ -139,21 +144,61 @@ void loop()
   Serial.print(" ");
  
 
-  lcd.setCursor(12,1);
+  //lcd.setCursor(12,1);
   lcd.print(Atual[2]);
-  lcd.setCursor(17,1);
-  lcd.print("   ");
-  lcd.setCursor(17,1);
+  //lcd.setCursor(17,1);
+  //lcd.print("   ");
+  //lcd.setCursor(17,1);
   lcd.print(TemperaturaArray[2][1]);
 
-  
-  
+
+  lcd.setCursor(0,2);
+  lcd.print("U ");
+  lcd.setCursor(2,2);
+  lcd.print(UmidadeFull);
+  lcd.print("% ");
+  lcd.setCursor(6,2);
+  lcd.print("             ");
+  lcd.setCursor(6,2);
+
+
+
+
+  if (UmidadeFull>29) {
+    lcd.print("Umidade OK");
+    }
+    else{
+      if (UmidadeFull>20){
+        lcd.print("Umid. Atencao");
+      }
+      else{
+        if (UmidadeFull>11){
+        lcd.print("Umid. Alerta");
+        }
+        else{
+          lcd.print("Umid. Emergen");
+          }
+        }
+      }
+
+  lcd.setCursor(0,3);
+  lcd.print("P ");
+  lcd.setCursor(2,3);
+  lcd.print(pressure);
+  lcd.setCursor(6,3);
+  lcd.print("             ");
+  lcd.setCursor(6,3);
+    
+      
   Serial.print(Atual[2]);
   Serial.println(TemperaturaArray[2][1]);
   Serial.print("U ");
   Serial.print(bme280.getHumidity());
   Serial.print("%");
   Serial.print(" ");
+
+
+  
   Serial.print(Atual[0]);
   Serial.print(HumidadeArray[0][1]);
   Serial.print(" ");
