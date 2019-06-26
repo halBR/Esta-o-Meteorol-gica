@@ -49,6 +49,7 @@ void setup()
   lcd.begin (20,4); // 16 x 2 LCD module
   lcd.setBacklightPin(3,POSITIVE); // BL, BL_POL
   lcd.setBacklight(HIGH);
+  //lcd.setBacklight(LOW);
   
   //Check do sensor Pressao
   if(!bme280.init()){
@@ -87,7 +88,7 @@ void loop()
   Data = String(now.day()) + "/" + String(now.month()) + "/" + String(now.year()) + " " + String(daysOfTheWeek[now.dayOfTheWeek()]); 
   temperaturaFull=bme280.getTemperature();
   UmidadeFull=bme280.getHumidity();
-  pressure = bme280.getPressure()/100
+  pressure = bme280.getPressure()/100;
     
   //Verifica a qualidade do ar.
   if (UmidadeFull>29) {
@@ -99,7 +100,7 @@ void loop()
         }
         else{
           if (UmidadeFull>11){
-            QualidadeAr="Umid. Alerta");
+            QualidadeAr=("Umid. Alerta");
             }
             else{
               QualidadeAr=("Umid. Emergen");
@@ -141,7 +142,7 @@ void loop()
   if (contador==intervalo[1]) {
     //Le os sensores
     TemperaturaArray[1][0]=temperaturaFull;
-    HumidadeArray[1][0]=UmidadeFull();
+    HumidadeArray[1][0]=UmidadeFull;
     PressaoArray[1][0]=pressure;
 
     //Calcula a diferenca
