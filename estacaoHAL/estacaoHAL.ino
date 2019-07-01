@@ -22,7 +22,6 @@ int PressaoArray[3][2];
 //Variavel do intervalo entre dados historiocos.
 int intervalo[3] = {3, 6, 12};
 
-
 String Hora;
 String Data;
 int pressure;
@@ -34,12 +33,6 @@ String QualidadeAr;
 
 boolean PrimeiraVez = true;
 String Atual[3];
-
-// Variaveis Tendencia.
-//char tendencia2temp = ' ';
-//char tendencia3temp = ' ';
-//char tendencia2um = ' ';
-//char tendencia3um = ' ';
 
 void setup()
 {
