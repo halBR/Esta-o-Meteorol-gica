@@ -20,7 +20,7 @@ int HumidadeArray[3][2];
 int PressaoArray[3][2];
 
 //Variavel do intervalo entre dados historiocos.
-int intervalo[3] = {3, 6, 12};
+int intervalo[3] = {360, 720, 1080};
 
 String Hora;
 String Data;
